@@ -4,7 +4,7 @@ from misc.config import Config
 from scene.tile import Tile
 from scene.player import Player
 from misc.path import PathManager
-from misc.loader import  import_csv_layout, import_folder
+from misc.loader import import_csv_layout, import_folder
 
 
 class Scene:
@@ -40,14 +40,6 @@ class Scene:
                         if style == 'object':
                             Tile((x, y), [self.visible_sprites, self.obstacles_sprites],
                                  'object', graphics['objects'][int(col)])
-
-        # for row_index, row in enumerate(get_map1()):
-        #     for col_index, col in enumerate(row):
-        #         x = col_index * Config.TITLE_SIZE
-        #         y = row_index * Config.TITLE_SIZE
-        #         if col == 'x':
-        #             Tile((x, y), [self.visible_sprites, self.obstacles_sprites])
-        #         if col == 'p':
         self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites)
 
     def run(self):
