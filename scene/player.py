@@ -5,7 +5,7 @@ from misc.path import PathManager
 class Player(pg.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
-        self.image = pg.image.load(PathManager.get('assets/player/down/down_0.png')).convert_alpha()
+        self.image = pg.image.load(PathManager.get('assets/graphics/player/down/down_0.png')).convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -26)
 

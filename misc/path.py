@@ -9,3 +9,8 @@ class PathManager(ABC):
     @classmethod
     def get(cls, path: str) -> Path:
         return cls.ROOT.joinpath(path)
+
+    @classmethod
+    def get_folder(cls, path: str) -> list:
+        return [f for f in Path(cls.get(path)).iterdir() if f.is_file()]
+
