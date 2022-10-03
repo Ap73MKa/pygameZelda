@@ -2,6 +2,7 @@ import sys
 import pygame as pg
 from misc.config import Config
 from scene.main import Scene
+from misc.font import WATER_COLOR
 
 
 class Game:
@@ -19,7 +20,7 @@ class Game:
                     pg.quit()
                     sys.exit()
 
-            self.screen.fill('black')
+            self.screen.fill(WATER_COLOR)
             self.scene.run()
             pg.display.update()
             self.clock.tick(Config.FPS)

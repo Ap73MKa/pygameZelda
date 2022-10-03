@@ -5,6 +5,8 @@ from scene.tile import Tile
 from scene.player import Player
 from misc.path import PathManager
 from misc.loader import import_csv_layout, import_folder
+from scene.weapon import Weapon
+from scene.ui import UI
 
 
 class Scene:
@@ -13,6 +15,8 @@ class Scene:
         self.visible_sprites = YSortCameraGroup()
         self.obstacles_sprites = pg.sprite.Group()
         self.create_map()
+        self.current_attack = None
+        self.ui = UI()
 
     def create_map(self):
         layouts = {
@@ -40,11 +44,21 @@ class Scene:
                         if style == 'object':
                             Tile((x, y), [self.visible_sprites, self.obstacles_sprites],
                                  'object', graphics['objects'][int(col)])
-        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites)
+        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites,
+                             self.create_attack, self.destroy_attack)
+
+    def create_attack(self):
+        self.current_attack = Weapon(self.player, [self.visible_sprites])
+
+    def destroy_attack(self):
+        if self.create_attack:
+            self.current_attack.kill()
+        self.current_attack = None
 
     def run(self):
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
+        self.ui.display(self.player)
 
 
 class YSortCameraGroup(pg.sprite.Group):

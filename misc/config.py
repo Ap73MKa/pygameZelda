@@ -15,26 +15,26 @@ def get_weapon_data() -> dict:
         'sword': {
             'cooldown': 100,
             'damage': 15,
-            'graphic': PathManager.get('assets/graphic/weapons/sword/full.png')
+            'graphic': PathManager.get('assets/graphics/weapons/sword/full.png')
             },
         'lance': {
             'cooldown': 100,
             'damage': 15,
-            'graphic': PathManager.get('assets/graphic/weapons/lance/full.png')
+            'graphic': PathManager.get('assets/graphics/weapons/lance/full.png')
         },
         'axe': {
             'cooldown': 100,
             'damage': 15,
-            'graphic': PathManager.get('assets/graphic/weapons/axe/full.png')
+            'graphic': PathManager.get('assets/graphics/weapons/axe/full.png')
         },
         'rapier': {
             'cooldown': 100,
             'damage': 15,
-            'graphic': PathManager.get('assets/graphic/weapons/rapier/full.png')
+            'graphic': PathManager.get('assets/graphics/weapons/rapier/full.png')
         },
         'sai': {
             'cooldown': 100,
             'damage': 15,
-            'graphic': PathManager.get('assets/graphic/weapons/sai/full.png')
+            'graphic': PathManager.get('assets/graphics/weapons/sai/full.png')
         }
     }
