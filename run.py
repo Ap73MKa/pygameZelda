@@ -5,7 +5,7 @@ from game import Game
 def main():
     try:
         game = Game()
-        game.main_loop()
+        game.on_execute()
     except Exception as exp:
         logger.error(exp)
 
