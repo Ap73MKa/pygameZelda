@@ -178,7 +178,7 @@ class Player(pg.sprite.Sprite):
             'energy': 60,
             'attack': 10,
             'magic': 4,
-            'speed': 6
+            'speed': 0.4
         }
 
     def update(self):
