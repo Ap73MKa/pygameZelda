@@ -1,4 +1,3 @@
-import sys
 import pygame as pg
 from misc.config import Config
 from scene.main import Scene
@@ -14,13 +13,16 @@ class Game:
         self.scene = Scene()
 
     def main_loop(self) -> None:
-        while True:
+        running = True
+
+        while running:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    pg.quit()
-                    sys.exit()
+                    running = False
 
             self.screen.fill(WATER_COLOR)
             self.scene.run()
-            pg.display.update()
             self.clock.tick(Config.FPS)
+            pg.display.update()
+
+        pg.quit()
