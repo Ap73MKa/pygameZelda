@@ -16,7 +16,7 @@ class CameraGroup(pg.sprite.Group):
     def custom_draw(self, player):
         # smooth offset
         heading = player.rect.center - self.camera
-        self.camera += heading * 0.07
+        self.camera += heading * 0.1
         offset = self.camera - self.center
 
         # map border
@@ -24,6 +24,9 @@ class CameraGroup(pg.sprite.Group):
         offset.y -= min(offset.y, 0)
         offset.x = min(self.floor_rect.width - self.center.x, offset.x)
         offset.y = min(self.floor_rect.height - self.center.y, offset.y)
+
+        offset.x = round(offset.x)
+        offset.y = round(offset.y)
 
         # render with offset
         floor_offset_pos = self.floor_rect.topleft - offset

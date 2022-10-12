@@ -1,5 +1,6 @@
 import pygame as pg
 from misc.path import PathManager
+from misc.config import Keyboard
 
 
 class Player(pg.sprite.Sprite):
@@ -8,7 +9,7 @@ class Player(pg.sprite.Sprite):
         self.image = pg.image.load(PathManager.get('assets/graphics/player/down/down_0.png')).convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pg.math.Vector2()
-        self.speed = 5
+        self.speed = 300
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -27,14 +28,15 @@ class Player(pg.sprite.Sprite):
         else:
             self.direction.x = 0
 
-    def move(self):
+    def move(self, delta):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
-        self.rect.center += self.direction * self.speed
+        self.rect.x = round(self.direction.x * self.speed * delta + self.rect.x)
+        self.rect.y = round(self.direction.y * self.speed * delta + self.rect.y)
 
-    def update(self):
+    def update(self, delta):
         self.input()
-        self.move()
+        self.move(delta)
 
 # import pygame as pg
 # from misc.path import PathManager

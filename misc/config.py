@@ -1,3 +1,4 @@
+import pygame as pg
 from typing import Final
 from abc import ABC
 from misc.path import PathManager
@@ -10,31 +11,8 @@ class Config(ABC):
     TITLE_SIZE: Final = 64
 
 
-def get_weapon_data() -> dict:
-    return {
-        'sword': {
-            'cooldown': 100,
-            'damage': 15,
-            'graphic': PathManager.get('assets/graphics/weapons/sword/full.png')
-            },
-        'lance': {
-            'cooldown': 100,
-            'damage': 15,
-            'graphic': PathManager.get('assets/graphics/weapons/lance/full.png')
-        },
-        'axe': {
-            'cooldown': 100,
-            'damage': 15,
-            'graphic': PathManager.get('assets/graphics/weapons/axe/full.png')
-        },
-        'rapier': {
-            'cooldown': 100,
-            'damage': 15,
-            'graphic': PathManager.get('assets/graphics/weapons/rapier/full.png')
-        },
-        'sai': {
-            'cooldown': 100,
-            'damage': 15,
-            'graphic': PathManager.get('assets/graphics/weapons/sai/full.png')
-        }
-    }
+class Keyboard(ABC):
+    UP: Final = pg.K_w, pg.K_UP,
+    DOWN: Final = pg.K_s, pg.K_DOWN,
+    LEFT: Final = pg.K_a, pg.K_LEFT,
+    RIGHT: Final = pg.K_d, pg.K_RIGHT

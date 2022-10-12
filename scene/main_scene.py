@@ -1,5 +1,5 @@
 import pygame as pg
-from scene.player import Player
+from objects.characters.player import Player
 from scene.camera import CameraGroup
 
 
@@ -7,11 +7,11 @@ class Scene:
     def __init__(self):
         self.display_surface = pg.display.get_surface()
         self.camera_group = CameraGroup()
-        self.player = Player((608, 308), self.camera_group)
+        self.player = Player((1000, 800), self.camera_group)
 
-    def run(self):
+    def run(self, delta):
         self.camera_group.custom_draw(self.player)
-        self.player.update()
+        self.player.update(delta)
 
 
 # import pygame as pg
