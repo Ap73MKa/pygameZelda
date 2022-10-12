@@ -1,6 +1,6 @@
 import pygame as pg
 from misc.config import Config
-from scene.scene import Scene
+from scene.base_scene import Scene
 from misc.font import WATER_COLOR
 
 
@@ -23,6 +23,7 @@ class Game:
 
     def on_render(self):
         self.screen.fill(WATER_COLOR)
+        self.scene.run()
         pg.display.update()
 
     def on_execute(self) -> None:

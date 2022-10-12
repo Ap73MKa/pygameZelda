@@ -1,5 +1,5 @@
 import pygame as pg
-from scene.player import Player
+from base_scene.player import Player
 from misc.path import PathManager
 
 

@@ -1,9 +1,15 @@
-class Scene:
-    def __init(self):
-        pass
+import pygame as pg
+from scene.player import Player
 
-    def create_map(self):
-        pass
+
+class Scene:
+    def __init__(self):
+        self.display_surface = pg.display.get_surface()
+        self.player = Player((200, 200))
+
+    def run(self):
+        self.display_surface.blit(self.player.image, self.player.rect)
+        self.player.update()
 
 
 # import pygame as pg
