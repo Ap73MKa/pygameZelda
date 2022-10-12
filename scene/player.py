@@ -3,14 +3,39 @@ from misc.path import PathManager
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, pos: tuple[int, int]):
-        pg.sprite.Sprite.__init__(self)
+    def __init__(self, pos: tuple[int, int], group: pg.sprite.Group):
+        super().__init__(group)
         self.image = pg.image.load(PathManager.get('assets/graphics/player/down/down_0.png')).convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pg.math.Vector2()
+        self.speed = 5
+
+    def input(self):
+        keys = pg.key.get_pressed()
+
+        if keys[pg.K_UP] or keys[pg.K_w]:
+            self.direction.y = -1
+        elif keys[pg.K_DOWN] or keys[pg.K_s]:
+            self.direction.y = 1
+        else:
+            self.direction.y = 0
+
+        if keys[pg.K_LEFT] or keys[pg.K_a]:
+            self.direction.x = -1
+        elif keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.direction.x = 1
+        else:
+            self.direction.x = 0
+
+    def move(self):
+        if self.direction.magnitude() != 0:
+            self.direction = self.direction.normalize()
+        self.rect.center += self.direction * self.speed
 
     def update(self):
-        pass
+        self.input()
+        self.move()
+
 # import pygame as pg
 # from misc.path import PathManager
 # from misc.loader import import_folder

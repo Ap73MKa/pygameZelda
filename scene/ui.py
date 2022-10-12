@@ -1,5 +1,5 @@
 import pygame as pg
-from base_scene.player import Player
+from main_scene.player import Player
 from misc.font import *
 from misc.config import get_weapon_data
 

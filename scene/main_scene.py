@@ -1,14 +1,16 @@
 import pygame as pg
 from scene.player import Player
+from scene.camera import CameraGroup
 
 
 class Scene:
     def __init__(self):
         self.display_surface = pg.display.get_surface()
-        self.player = Player((200, 200))
+        self.camera_group = CameraGroup()
+        self.player = Player((608, 308), self.camera_group)
 
     def run(self):
-        self.display_surface.blit(self.player.image, self.player.rect)
+        self.camera_group.custom_draw(self.player)
         self.player.update()
 
 

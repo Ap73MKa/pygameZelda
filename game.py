@@ -1,6 +1,6 @@
 import pygame as pg
 from misc.config import Config
-from scene.base_scene import Scene
+from scene.main_scene import Scene
 from misc.font import WATER_COLOR
 
 
