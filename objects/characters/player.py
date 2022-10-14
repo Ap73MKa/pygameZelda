@@ -1,30 +1,44 @@
 import pygame as pg
+from pygame.math import Vector2
 from misc.path import PathManager
-from misc.config import Keyboard
+from objects.characters.utils import SpriteSheet, DirEnum, StateEnum
+from misc.config import Config, Keyboard
 
 
 class Player(pg.sprite.Sprite):
     def __init__(self, pos: tuple[int, int], group: pg.sprite.Group):
         super().__init__(group)
-        self.image = pg.image.load(PathManager.get('assets/graphics/player/down/down_0.png')).convert_alpha()
-        self.rect = self.image.get_rect(topleft=pos)
-        self.direction = pg.math.Vector2()
+        self.direction = Vector2()
+        self.direction_state = DirEnum.DOWN
+        self.player_state = StateEnum.IDLE
         self.speed = 300
+
+        # Graphic
+        sprite_path = PathManager.get('assets/graphics/player/stand_walk.png')
+        self.sprites = SpriteSheet(sprite_path, (Config.TITLE_SIZE, Config.TITLE_SIZE))
+        self.sprite_speed = 5
+        self.sprite_index = 0
+        self.image = self.sprites[1][0]
+        self.rect = self.image.get_rect(topleft=pos)
 
     def input(self):
         keys = pg.key.get_pressed()
 
-        if keys[pg.K_UP] or keys[pg.K_w]:
+        if keys[Keyboard.UP[0]] or keys[Keyboard.UP[1]]:
             self.direction.y = -1
-        elif keys[pg.K_DOWN] or keys[pg.K_s]:
+            self.direction_state = DirEnum.UP
+        elif keys[Keyboard.DOWN[0]] or keys[Keyboard.DOWN[1]]:
             self.direction.y = 1
+            self.direction_state = DirEnum.DOWN
         else:
             self.direction.y = 0
 
-        if keys[pg.K_LEFT] or keys[pg.K_a]:
+        if keys[Keyboard.LEFT[0]] or keys[Keyboard.LEFT[1]]:
             self.direction.x = -1
-        elif keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.direction_state = DirEnum.LEFT
+        elif keys[Keyboard.RIGHT[0]] or keys[Keyboard.RIGHT[1]]:
             self.direction.x = 1
+            self.direction_state = DirEnum.RIGHT
         else:
             self.direction.x = 0
 
@@ -34,9 +48,28 @@ class Player(pg.sprite.Sprite):
         self.rect.x = round(self.direction.x * self.speed * delta + self.rect.x)
         self.rect.y = round(self.direction.y * self.speed * delta + self.rect.y)
 
+    def animate(self, delta):
+        animation = self.sprites[self.direction_state]
+        if self.player_state == StateEnum.IDLE:
+            self.image = animation[0]
+            return
+        self.sprite_index += self.sprite_speed * delta
+        if self.sprite_index >= len(animation):
+            self.sprite_index = 0
+        self.image = animation[int(self.sprite_index)]
+
+    def get_state(self):
+        if self.direction.x == 0 and self.direction.y == 0:
+            self.player_state = StateEnum.IDLE
+        else:
+            self.player_state = StateEnum.WALK
+
     def update(self, delta):
         self.input()
         self.move(delta)
+        self.get_state()
+        self.animate(delta)
+
 
 # import pygame as pg
 # from misc.path import PathManager

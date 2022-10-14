@@ -1,28 +1,45 @@
 import pygame as pg
+from pytmx.util_pygame import load_pygame
+from pytmx import TiledMap
 from objects.characters.player import Player
 from scene.camera import CameraGroup
+from misc.path import PathManager
+from misc.config import Config
+
+
+class Tile(pg.sprite.Sprite):
+    def __init__(self, pos: tuple[int, int], surface: pg.Surface, groups: pg.sprite.Group):
+        super().__init__(groups)
+        self.image = surface
+        self.rect = self.image.get_rect(topleft=pos)
 
 
 class Scene:
     def __init__(self):
         self.display_surface = pg.display.get_surface()
-        self.camera_group = CameraGroup()
-        self.player = Player((1000, 800), self.camera_group)
+        self.tmx_data = load_pygame(PathManager.get('assets/map/my_map.tmx'))
+        corner = (self.tmx_data.width * Config.TITLE_SIZE, self.tmx_data.height * Config.TITLE_SIZE)
+        self.visible_sprites = CameraGroup(corner)
+        self.floor_sprites = pg.sprite.Group()
+        self.load_map(self.tmx_data)
+        self.player = Player((1000, 800), self.visible_sprites)
+
+    def load_map(self, data: TiledMap):
+        for layer in data.visible_layers:
+            if not hasattr(layer, 'data'):
+                break
+            for x, y, surf in layer.tiles():
+                pos = (x * Config.TITLE_SIZE, y * Config.TITLE_SIZE)
+                Tile(pos, surf, self.floor_sprites)
+
+        for obj in data.objects:
+            if not obj.image:
+                return
+            Tile((obj.x, obj.y), obj.image, self.visible_sprites)
 
     def run(self, delta):
-        self.camera_group.custom_draw(self.player)
         self.player.update(delta)
-
-
-# import pygame as pg
-# from random import choice
-# from misc.config import Config
-# from scene.tile import Tile
-# from scene.player import Player
-# from misc.path import PathManager
-# from misc.loader import import_csv_layout, import_folder
-# from scene.weapon import Weapon
-# from scene.ui import UI
+        self.visible_sprites.custom_draw(self.player, self.floor_sprites, delta)
 #
 #
 # class Scene:
@@ -33,35 +50,7 @@ class Scene:
 #         self.create_map()
 #         self.current_attack = None
 #         self.ui = UI()
-#
-#     def create_map(self):
-#         layouts = {
-#             'boundary': import_csv_layout(PathManager.get('assets/map/map_FloorBlocks.csv')),
-#             'grass': import_csv_layout(PathManager.get('assets/map/map_Grass.csv')),
-#             'object': import_csv_layout(PathManager.get('assets/map/map_LargeObjects.csv'))
-#         }
-#
-#         graphics = {
-#             'grass': import_folder(PathManager.get('assets/graphics/grass')),
-#             'objects': import_folder(PathManager.get('assets/graphics/objects'))
-#         }
-#
-#         for style, layout in layouts.items():
-#             for row_index, row in enumerate(layout):
-#                 for col_index, col in enumerate(row):
-#                     if col != '-1':
-#                         x = col_index * Config.TITLE_SIZE
-#                         y = row_index * Config.TITLE_SIZE
-#                         if style == 'boundary':
-#                             Tile((x, y), [self.obstacles_sprites], 'invisible')
-#                         if style == 'grass':
-#                             Tile((x, y), [self.visible_sprites, self.obstacles_sprites],
-#                                  'grass', choice(graphics['grass']))
-#                         if style == 'object':
-#                             Tile((x, y), [self.visible_sprites, self.obstacles_sprites],
-#                                  'object', graphics['objects'][int(col)])
-#         self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites,
-#                              self.create_attack, self.destroy_attack)
+
 #
 #     def create_attack(self):
 #         self.current_attack = Weapon(self.player, [self.visible_sprites])
@@ -76,25 +65,3 @@ class Scene:
 #         self.visible_sprites.update(delta)
 #         self.ui.display(self.player)
 #
-#
-# class YSortCameraGroup(pg.sprite.Group):
-#     def __init__(self):
-#         super().__init__()
-#         self.display_surface = pg.display.get_surface()
-#         self.half_width = self.display_surface.get_size()[0] // 2
-#         self.half_height = self.display_surface.get_size()[1] // 2
-#         self.offset = pg.math.Vector2()
-#
-#         self.floor_surface = pg.image.load(PathManager.get('assets/graphics/tilemap/ground.png')).convert()
-#         self.floor_rect = self.floor_surface.get_rect(topleft=(0, 0))
-#
-#     def custom_draw(self, player):
-#         self.offset.x = player.rect.centerx - self.half_width
-#         self.offset.y = player.rect.centery - self.half_height
-#
-#         floor_offset_pos = self.floor_rect.topleft - self.offset
-#         self.display_surface.blit(self.floor_surface, floor_offset_pos)
-#
-#         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-#             offset_pos = sprite.rect.topleft - self.offset
-#             self.display_surface.blit(sprite.image, offset_pos)

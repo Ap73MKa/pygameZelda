@@ -28,12 +28,13 @@ class Game:
         pg.display.update()
 
     def on_execute(self) -> None:
-        prev_time = time.perf_counter()
+        delta = 0
+        # prev_time = time.perf_counter()
         while self._running:
-            delta = time.perf_counter() - prev_time
-            prev_time = time.perf_counter()
+            # delta = time.perf_counter() - prev_time
+            # prev_time = time.perf_counter()
             for event in pg.event.get():
                 self.on_event(event)
             self.on_render(delta)
-            self.clock.tick(Config.FPS)
+            delta = self.clock.tick(Config.FPS) / 1000
         pg.quit()
