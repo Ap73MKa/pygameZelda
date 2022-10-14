@@ -6,8 +6,9 @@ from misc.config import Config, Keyboard
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, pos: tuple[int, int], group: pg.sprite.Group):
-        super().__init__(group)
+    def __init__(self, pos: tuple[int, int], groups: list[pg.sprite.Group], obstacle_sprites: pg.sprite.Group):
+        super().__init__(groups)
+        self.obstacle_sprites = obstacle_sprites
         self.direction = Vector2()
         self.direction_state = DirEnum.DOWN
         self.player_state = StateEnum.IDLE
@@ -42,11 +43,39 @@ class Player(pg.sprite.Sprite):
         else:
             self.direction.x = 0
 
-    def move(self, delta):
+    def collision(self, direction):
+        if direction == 'horizontal':
+            for sprite in self.obstacle_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.x > 0:
+                        self.rect.right = sprite.rect.left
+                    if self.direction.x < 0:
+                        self.rect.left = sprite.rect.right
+
+        if direction == 'vertical':
+            for sprite in self.obstacle_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.y > 0:
+                        self.rect.bottom = sprite.rect.top
+                    if self.direction.y < 0:
+                        self.rect.top = sprite.rect.bottom
+
+    def move(self, delta, corner: tuple[int, int]):
+        # diagonal speed
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
+
+        # movement and collision
         self.rect.x = round(self.direction.x * self.speed * delta + self.rect.x)
+        self.collision('horizontal')
         self.rect.y = round(self.direction.y * self.speed * delta + self.rect.y)
+        self.collision('vertical')
+
+        # border limits
+        self.rect.x = max(self.rect.x, 0)
+        self.rect.y = max(self.rect.y, 0)
+        self.rect.x = min(self.rect.x, corner[0] - Config.TITLE_SIZE)
+        self.rect.y = min(self.rect.y, corner[1] - Config.TITLE_SIZE)
 
     def animate(self, delta):
         animation = self.sprites[self.direction_state]
@@ -64,9 +93,9 @@ class Player(pg.sprite.Sprite):
         else:
             self.player_state = StateEnum.WALK
 
-    def update(self, delta):
+    def update(self, delta, corner):
         self.input()
-        self.move(delta)
+        self.move(delta, corner)
         self.get_state()
         self.animate(delta)
 

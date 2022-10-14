@@ -17,14 +17,15 @@ class CameraGroup(pg.sprite.Group):
         heading = player.rect.center - self.camera
         self.camera += heading * 0.1 * 50 * delta
         offset = self.camera - self.center
-        offset.x = round(offset.x)
-        offset.y = round(offset.y)
 
         # map border
         offset.x = max(offset.x, 0)
         offset.y = max(offset.y, 0)
-        offset.x = min(self.corner.x - self.center.x * 2, offset.x)
-        offset.y = min(self.corner.y - self.center.y * 2, offset.y)
+        offset.x = min(offset.x, self.corner.x - self.center.x * 2)
+        offset.y = min(offset.y, self.corner.y - self.center.y * 2)
+
+        offset.x = round(offset.x)
+        offset.y = round(offset.y)
 
         # draw floor
         for sprite in floor.sprites():

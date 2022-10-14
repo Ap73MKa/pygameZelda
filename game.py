@@ -1,8 +1,6 @@
-import time
 import pygame as pg
 from misc.config import Config
 from scene.main_scene import Scene
-from misc.font import WATER_COLOR
 
 
 class Game:
@@ -23,16 +21,12 @@ class Game:
             self._running = False
 
     def on_render(self, delta):
-        self.screen.fill(WATER_COLOR)
         self.scene.run(delta)
         pg.display.update()
 
     def on_execute(self) -> None:
         delta = 0
-        # prev_time = time.perf_counter()
         while self._running:
-            # delta = time.perf_counter() - prev_time
-            # prev_time = time.perf_counter()
             for event in pg.event.get():
                 self.on_event(event)
             self.on_render(delta)
