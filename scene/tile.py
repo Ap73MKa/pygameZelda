@@ -1,13 +1,12 @@
-# import pygame as pg
-# from misc.config import Config
-# class Tile:
-#     def __init__(self, pos: tuple, groups: pg.sprite.Group,
-#                  surface=pg.Surface((Config.WIDTH, Config.HEIGHT))):
-#         super().__init__(self)
-#         self.image = surface
-#         self.rect = self.image.get_rect(topleft=pos)
-#
-#
+import pygame as pg
+
+
+class Tile(pg.sprite.Sprite):
+    def __init__(self, pos: tuple[int, int], surface: pg.Surface, groups: list[pg.sprite.Group]):
+        super().__init__(groups)
+        self.image = surface
+        self.rect = self.image.get_rect(topleft=pos)
+
 # import pygame as pg
 # from misc.config import Config
 # class Tile(pg.sprite.Sprite):
