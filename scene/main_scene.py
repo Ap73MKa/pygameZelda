@@ -36,7 +36,6 @@ class Scene:
         layer = data.get_layer_by_name('Border')
         if hasattr(layer, 'data'):
             for x, y, surf in layer.tiles():
-                print('b')
                 pos = (x * Config.TITLE_SIZE, y * Config.TITLE_SIZE)
                 Tile(pos, pg.Surface((Config.TITLE_SIZE, Config.TITLE_SIZE)), [self.obstacle_sprites])
 

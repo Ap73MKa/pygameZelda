@@ -1,7 +1,6 @@
 import pygame as pg
 from typing import Final
 from abc import ABC
-from misc.path import PathManager
 
 
 class Config(ABC):
