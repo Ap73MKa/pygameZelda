@@ -3,6 +3,7 @@ from pygame.math import Vector2
 from misc.path import PathManager
 from objects.characters.utils import SpriteSheet, DirEnum, StateEnum
 from misc.config import Config, Keyboard
+from scene.light import create_shadow
 
 
 class Player(pg.sprite.Sprite):
@@ -21,6 +22,15 @@ class Player(pg.sprite.Sprite):
         self.sprite_index = 0
         self.image = self.sprites[1][0]
         self.rect = self.image.get_rect(topleft=pos)
+
+        self.prev_sprite_index = self.sprite_index
+        self.shadow_pos, self.shadow_surf = create_shadow(self)
+
+    def get_shadow(self):
+        if not self.prev_sprite_index == self.sprite_index:
+            self.prev_sprite_index = self.sprite_index
+            self.shadow_pos, self.shadow_surf = create_shadow(self)
+        return self.shadow_pos, self.shadow_surf
 
     def input(self):
         keys = pg.key.get_pressed()
