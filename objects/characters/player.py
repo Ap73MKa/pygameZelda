@@ -1,8 +1,8 @@
 import pygame as pg
+
 from pygame.math import Vector2
-from misc.path import PathManager
 from objects.characters.utils import SpriteSheet, DirEnum, StateEnum
-from misc.config import Config, Keyboard
+from misc.config import Config, PLAYER_ANIM_PATH, Keyboard
 from scene.light import create_shadow
 
 
@@ -16,14 +16,11 @@ class Player(pg.sprite.Sprite):
         self.speed = 300
 
         # Graphic
-        sprite_path = PathManager.get('assets/graphics/player/stand_walk.png')
-        self.sprites = SpriteSheet(sprite_path, (Config.TITLE_SIZE, Config.TITLE_SIZE))
+        self.sprites = SpriteSheet(PLAYER_ANIM_PATH, (Config.TITLE_SIZE, Config.TITLE_SIZE))
         self.sprite_speed = 5
-        self.sprite_index = 0
-        self.image = self.sprites[1][0]
+        self.sprite_index = self.prev_sprite_index = 0
+        self.image = self.sprites[self.direction_state][0]
         self.rect = self.image.get_rect(topleft=pos)
-
-        self.prev_sprite_index = self.sprite_index
         self.shadow_pos, self.shadow_surf = create_shadow(self)
 
     def get_shadow(self):
@@ -32,26 +29,37 @@ class Player(pg.sprite.Sprite):
             self.shadow_pos, self.shadow_surf = create_shadow(self)
         return self.shadow_pos, self.shadow_surf
 
+    # def set_move(self, direction: DirEnum):
+    #     vec = KeyBoard_actions[direction]
+    #     self.direction.x = vec.x if vec.x != 0 else self.direction.x
+    #     self.direction.y = vec.y if vec.y != 0 else self.direction.y
+    #     self.direction_state = direction
+    #
+    # def stop_move(self, direction: DirEnum):
+    #     vec = KeyBoard_actions[direction]
+    #     self.direction.x = 0 if vec.x != 0 else self.direction.x
+    #     self.direction.y = 0 if vec.y != 0 else self.direction.y
+
     def input(self):
         keys = pg.key.get_pressed()
+        self.direction.x = 0
+        self.direction.y = 0
 
         if keys[Keyboard.UP[0]] or keys[Keyboard.UP[1]]:
             self.direction.y = -1
             self.direction_state = DirEnum.UP
-        elif keys[Keyboard.DOWN[0]] or keys[Keyboard.DOWN[1]]:
+
+        if keys[Keyboard.DOWN[0]] or keys[Keyboard.DOWN[1]]:
             self.direction.y = 1
             self.direction_state = DirEnum.DOWN
-        else:
-            self.direction.y = 0
 
         if keys[Keyboard.LEFT[0]] or keys[Keyboard.LEFT[1]]:
             self.direction.x = -1
             self.direction_state = DirEnum.LEFT
-        elif keys[Keyboard.RIGHT[0]] or keys[Keyboard.RIGHT[1]]:
+
+        if keys[Keyboard.RIGHT[0]] or keys[Keyboard.RIGHT[1]]:
             self.direction.x = 1
             self.direction_state = DirEnum.RIGHT
-        else:
-            self.direction.x = 0
 
     def collision(self, direction):
         if direction == 'horizontal':

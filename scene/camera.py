@@ -1,4 +1,5 @@
 import pygame as pg
+
 from pygame.math import Vector2
 from objects.characters.player import Player
 from misc.config import Config
@@ -46,4 +47,3 @@ class CameraGroup(pg.sprite.Group):
                     self.display_surface.blit(sh_surf, sh_pos.topleft - self.offset)
                 offset_pos = sprite.rect.topleft - self.offset
                 self.display_surface.blit(sprite.image, offset_pos)
-
