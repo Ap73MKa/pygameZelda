@@ -1,5 +1,6 @@
 from enum import IntEnum, auto
 from pygame import Vector2
+from misc.config import Keyboard
 
 import pygame as pg
 
@@ -39,6 +40,13 @@ KeyBoard_actions = {
     DirEnum.DOWN: Vector2(0, 1),
     DirEnum.LEFT: Vector2(-1, 0),
     DirEnum.UP: Vector2(0, -1)
+}
+
+key_vec = {
+    DirEnum.RIGHT: Keyboard.RIGHT,
+    DirEnum.DOWN: Keyboard.DOWN,
+    DirEnum.LEFT: Keyboard.LEFT,
+    DirEnum.UP: Keyboard.UP
 }
 
 

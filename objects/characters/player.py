@@ -1,7 +1,7 @@
 import pygame as pg
 
 from pygame.math import Vector2
-from objects.characters.utils import SpriteSheet, DirEnum, StateEnum
+from objects.characters.utils import SpriteSheet, DirEnum, StateEnum, KeyBoard_actions
 from misc.config import Config, PLAYER_ANIM_PATH, Keyboard
 from scene.light import create_shadow
 
@@ -29,37 +29,37 @@ class Player(pg.sprite.Sprite):
             self.shadow_pos, self.shadow_surf = create_shadow(self)
         return self.shadow_pos, self.shadow_surf
 
-    # def set_move(self, direction: DirEnum):
-    #     vec = KeyBoard_actions[direction]
-    #     self.direction.x = vec.x if vec.x != 0 else self.direction.x
-    #     self.direction.y = vec.y if vec.y != 0 else self.direction.y
-    #     self.direction_state = direction
+    def set_move(self, direction: DirEnum):
+        vec = KeyBoard_actions[direction]
+        self.direction.x = vec.x if vec.x != 0 else self.direction.x
+        self.direction.y = vec.y if vec.y != 0 else self.direction.y
+        self.direction_state = direction
+
+    def stop_move(self, direction: DirEnum):
+        vec = KeyBoard_actions[direction]
+        self.direction.x = 0 if vec.x != 0 else self.direction.x
+        self.direction.y = 0 if vec.y != 0 else self.direction.y
+
+    # def input(self):
+    #     keys = pg.key.get_pressed()
+    #     self.direction.x = 0
+    #     self.direction.y = 0
     #
-    # def stop_move(self, direction: DirEnum):
-    #     vec = KeyBoard_actions[direction]
-    #     self.direction.x = 0 if vec.x != 0 else self.direction.x
-    #     self.direction.y = 0 if vec.y != 0 else self.direction.y
-
-    def input(self):
-        keys = pg.key.get_pressed()
-        self.direction.x = 0
-        self.direction.y = 0
-
-        if keys[Keyboard.UP[0]] or keys[Keyboard.UP[1]]:
-            self.direction.y = -1
-            self.direction_state = DirEnum.UP
-
-        if keys[Keyboard.DOWN[0]] or keys[Keyboard.DOWN[1]]:
-            self.direction.y = 1
-            self.direction_state = DirEnum.DOWN
-
-        if keys[Keyboard.LEFT[0]] or keys[Keyboard.LEFT[1]]:
-            self.direction.x = -1
-            self.direction_state = DirEnum.LEFT
-
-        if keys[Keyboard.RIGHT[0]] or keys[Keyboard.RIGHT[1]]:
-            self.direction.x = 1
-            self.direction_state = DirEnum.RIGHT
+    #     if keys[Keyboard.UP[0]] or keys[Keyboard.UP[1]]:
+    #         self.direction.y = -1
+    #         self.direction_state = DirEnum.UP
+    #
+    #     if keys[Keyboard.DOWN[0]] or keys[Keyboard.DOWN[1]]:
+    #         self.direction.y = 1
+    #         self.direction_state = DirEnum.DOWN
+    #
+    #     if keys[Keyboard.LEFT[0]] or keys[Keyboard.LEFT[1]]:
+    #         self.direction.x = -1
+    #         self.direction_state = DirEnum.LEFT
+    #
+    #     if keys[Keyboard.RIGHT[0]] or keys[Keyboard.RIGHT[1]]:
+    #         self.direction.x = 1
+    #         self.direction_state = DirEnum.RIGHT
 
     def collision(self, direction):
         if direction == 'horizontal':
@@ -112,7 +112,7 @@ class Player(pg.sprite.Sprite):
             self.player_state = StateEnum.WALK
 
     def update(self, delta, corner):
-        self.input()
+        # self.input()
         self.move(delta, corner)
         self.get_state()
         self.animate(delta)
