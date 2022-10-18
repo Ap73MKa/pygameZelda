@@ -1,4 +1,5 @@
 from enum import IntEnum, auto
+from pygame import Vector2
 
 import pygame as pg
 
@@ -31,6 +32,14 @@ class DirEnum(IntEnum):
     DOWN = auto()
     LEFT = auto()
     UP = auto()
+
+
+KeyBoard_actions = {
+    DirEnum.RIGHT: Vector2(1, 0),
+    DirEnum.DOWN: Vector2(0, 1),
+    DirEnum.LEFT: Vector2(-1, 0),
+    DirEnum.UP: Vector2(0, -1)
+}
 
 
 class StateEnum(IntEnum):

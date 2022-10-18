@@ -5,13 +5,8 @@ from objects.characters.player import Player
 from scene.camera import CameraGroup
 from misc.path import PathManager
 from misc.config import Config
-
-
-class Tile(pg.sprite.Sprite):
-    def __init__(self, pos: tuple[int, int], surface: pg.Surface, groups: list[pg.sprite.Group]):
-        super().__init__(groups)
-        self.image = surface
-        self.rect = self.image.get_rect(topleft=pos)
+from scene.tile import Tile
+from scene.light import create_shadow
 
 
 class Scene:
@@ -36,14 +31,15 @@ class Scene:
         layer = data.get_layer_by_name('Border')
         if hasattr(layer, 'data'):
             for x, y, surf in layer.tiles():
-                print('b')
                 pos = (x * Config.TITLE_SIZE, y * Config.TITLE_SIZE)
                 Tile(pos, pg.Surface((Config.TITLE_SIZE, Config.TITLE_SIZE)), [self.obstacle_sprites])
 
         for obj in data.objects:
             if not obj.image:
                 return
-            Tile((obj.x, obj.y), obj.image, [self.visible_sprites, self.obstacle_sprites])
+            sprite = Tile((obj.x, obj.y), obj.image, [self.visible_sprites, self.obstacle_sprites])
+            pos, surf = create_shadow(sprite)
+            Tile((pos[0], pos[1]), surf, [self.visible_sprites])
 
     def run(self, delta):
         self.player.update(delta, self.corner)
