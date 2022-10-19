@@ -2,16 +2,15 @@ import pygame as pg
 
 from pygame.math import Vector2
 from objects.characters.utils import SpriteSheet, DirEnum, StateEnum, KeyBoard_actions
-from misc.config import Config, PLAYER_ANIM_PATH, Keyboard
+from misc.config import Config, PLAYER_ANIM_PATH
 from scene.light import create_shadow
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, pos: tuple[int, int], groups: list[pg.sprite.Group], obstacle_sprites: pg.sprite.Group):
+    def __init__(self, pos: tuple[int, int], groups: list[pg.sprite.Group]):
         super().__init__(groups)
-        self.obstacle_sprites = obstacle_sprites
         self.direction = Vector2()
-        self.direction_state = DirEnum.DOWN
+        self.direction_state = self.prev_dir = DirEnum.DOWN
         self.player_state = StateEnum.IDLE
         self.speed = 300
 
@@ -24,7 +23,9 @@ class Player(pg.sprite.Sprite):
         self.shadow_pos, self.shadow_surf = create_shadow(self)
 
     def get_shadow(self):
-        if not self.prev_sprite_index == self.sprite_index:
+        # todo fix player's dynamic shadow
+        if int(self.prev_sprite_index) != int(self.sprite_index) or\
+                self.prev_dir != self.direction_state:
             self.prev_sprite_index = self.sprite_index
             self.shadow_pos, self.shadow_surf = create_shadow(self)
         return self.shadow_pos, self.shadow_surf
@@ -37,59 +38,39 @@ class Player(pg.sprite.Sprite):
 
     def stop_move(self, direction: DirEnum):
         vec = KeyBoard_actions[direction]
-        self.direction.x = 0 if vec.x != 0 else self.direction.x
-        self.direction.y = 0 if vec.y != 0 else self.direction.y
+        if vec.x != 0:
+            if self.direction.y < 0:
+                self.direction_state = DirEnum.UP
+            elif self.direction.y > 0:
+                self.direction_state = DirEnum.DOWN
+            self.direction.x = 0
 
-    # def input(self):
-    #     keys = pg.key.get_pressed()
-    #     self.direction.x = 0
-    #     self.direction.y = 0
-    #
-    #     if keys[Keyboard.UP[0]] or keys[Keyboard.UP[1]]:
-    #         self.direction.y = -1
-    #         self.direction_state = DirEnum.UP
-    #
-    #     if keys[Keyboard.DOWN[0]] or keys[Keyboard.DOWN[1]]:
-    #         self.direction.y = 1
-    #         self.direction_state = DirEnum.DOWN
-    #
-    #     if keys[Keyboard.LEFT[0]] or keys[Keyboard.LEFT[1]]:
-    #         self.direction.x = -1
-    #         self.direction_state = DirEnum.LEFT
-    #
-    #     if keys[Keyboard.RIGHT[0]] or keys[Keyboard.RIGHT[1]]:
-    #         self.direction.x = 1
-    #         self.direction_state = DirEnum.RIGHT
+        elif vec.y != 0:
+            if self.direction.x < 0:
+                self.direction_state = DirEnum.LEFT
+            elif self.direction.x > 0:
+                self.direction_state = DirEnum.RIGHT
+            self.direction.y = 0
 
-    def collision(self, direction):
-        if direction == 'horizontal':
-            for sprite in self.obstacle_sprites:
-                if sprite.rect.colliderect(self.rect):
-                    if self.direction.x > 0:
-                        self.rect.right = sprite.rect.left
-                    if self.direction.x < 0:
-                        self.rect.left = sprite.rect.right
+    def collision(self, sprite: pg.sprite.Sprite):
+        collision_tolerance = 10
+        if abs(sprite.rect.top - self.rect.bottom) < collision_tolerance and self.direction.y > 0:
+            self.rect.y -= abs(sprite.rect.top - self.rect.bottom)
+        elif abs(sprite.rect.bottom - self.rect.top) < collision_tolerance and self.direction.y < 0:
+            self.rect.y += abs(sprite.rect.bottom - self.rect.top)
 
-        if direction == 'vertical':
-            for sprite in self.obstacle_sprites:
-                if sprite.rect.colliderect(self.rect):
-                    if self.direction.y > 0:
-                        self.rect.bottom = sprite.rect.top
-                    if self.direction.y < 0:
-                        self.rect.top = sprite.rect.bottom
+        if abs(sprite.rect.left - self.rect.right) < collision_tolerance and self.direction.x > 0:
+            self.rect.x -= abs(sprite.rect.left - self.rect.right)
+        elif abs(sprite.rect.right - self.rect.left) < collision_tolerance and self.direction.x < 0:
+            self.rect.x += abs(sprite.rect.right - self.rect.left)
 
     def move(self, delta, corner: tuple[int, int]):
-        # diagonal speed
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
-
-        # movement and collision
         self.rect.x = round(self.direction.x * self.speed * delta + self.rect.x)
-        self.collision('horizontal')
         self.rect.y = round(self.direction.y * self.speed * delta + self.rect.y)
-        self.collision('vertical')
 
-        # border limits
+        # border
         self.rect.x = max(self.rect.x, 0)
         self.rect.y = max(self.rect.y, 0)
         self.rect.x = min(self.rect.x, corner[0] - Config.TITLE_SIZE)
@@ -112,7 +93,6 @@ class Player(pg.sprite.Sprite):
             self.player_state = StateEnum.WALK
 
     def update(self, delta, corner):
-        # self.input()
         self.move(delta, corner)
         self.get_state()
         self.animate(delta)

@@ -1,35 +1,37 @@
-# from scene.tile import Tile
-# from random import choice
-# from misc.loader import import_folder, import_csv_layout
-# from misc.path import PathManager
-# from misc.config import Config
-#
-#
-# def map_load(self):
-#         layouts = {
-#             'boundary': import_csv_layout(PathManager.get('assets/map/map_FloorBlocks.csv')),
-#             'grass': import_csv_layout(PathManager.get('assets/map/map_Grass.csv')),
-#             'object': import_csv_layout(PathManager.get('assets/map/map_LargeObjects.csv'))
-#         }
-#
-#         graphics = {
-#             'grass': import_folder(PathManager.get('assets/graphics/grass')),
-#             'objects': import_folder(PathManager.get('assets/graphics/objects'))
-#         }
-#
-#         for style, layout in layouts.items():
-#             for row_index, row in enumerate(layout):
-#                 for col_index, col in enumerate(row):
-#                     if col != '-1':
-#                         x = col_index * Config.TITLE_SIZE
-#                         y = row_index * Config.TITLE_SIZE
-#                         if style == 'boundary':
-#                             Tile((x, y), [self.obstacles_sprites], 'invisible')
-#                         if style == 'grass':
-#                             Tile((x, y), [self.visible_sprites, self.obstacles_sprites],
-#                                  'grass', choice(graphics['grass']))
-#                         if style == 'object':
-#                             Tile((x, y), [self.visible_sprites, self.obstacles_sprites],
-#                                  'object', graphics['objects'][int(col)])
-#         # self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites,
-#         #                      self.create_attack, self.destroy_attack)
+import pygame as pg
+
+from pytmx import TiledMap
+from misc.config import Config
+from scene.tile import Tile
+from scene.light import create_shadow
+
+
+def load_map(data: TiledMap, *groups):
+    """
+
+    :param data:
+    :param groups:
+    groups[0] - floor group
+    groups[1] - obstacle group
+    groups[2] - visible group
+    :return:
+    """
+    for layer in data.visible_layers:
+        if not hasattr(layer, 'data'):
+            break
+        for x, y, surf in layer.tiles():
+            pos = (x * Config.TITLE_SIZE, y * Config.TITLE_SIZE)
+            Tile(pos, surf, groups[0])
+
+    layer = data.get_layer_by_name('Border')
+    if hasattr(layer, 'data'):
+        for x, y, surf in layer.tiles():
+            pos = (x * Config.TITLE_SIZE, y * Config.TITLE_SIZE)
+            Tile(pos, pg.Surface((Config.TITLE_SIZE, Config.TITLE_SIZE)), [groups[1]])
+
+    for obj in data.objects:
+        if not obj.image:
+            return
+        sprite = Tile((obj.x, obj.y), obj.image, [groups[2], groups[1]])
+        pos, surf = create_shadow(sprite)
+        Tile((pos[0], pos[1]), surf, [groups[2]])

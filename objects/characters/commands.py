@@ -14,7 +14,6 @@ class StopMove(Command):
         self.direction = direction
 
     def execute(self, player: Player):
-        print(f'{self.direction} is unpressed')
         player.stop_move(self.direction)
 
 
@@ -23,7 +22,6 @@ class Move(Command):
         self.direction = direction
 
     def execute(self, player: Player):
-        print(f'{self.direction} is pressed')
         player.set_move(self.direction)
 
 
@@ -50,9 +48,11 @@ class InputHandler:
         if event.type == pg.KEYUP:
             for direct in DirEnum:
                 if event.key in key_vec[direct]:
-                    op_vec = abs(direct // 2 - 1) + direct % 2
+                    op_vec = len(DirEnum) - direct - (direct + 1) % 2 * 2
+                    self.pressed[direct] = False
                     if self.pressed[op_vec]:
-                        return self.stop[direct]
+                        return self.move[op_vec]
+                    return self.stop[direct]
         return None
 
     def handle_input(self, event):

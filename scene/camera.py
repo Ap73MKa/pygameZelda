@@ -39,7 +39,7 @@ class CameraGroup(pg.sprite.Group):
                 offset_pos = sprite.rect.topleft - self.offset
                 self.display_surface.blit(sprite.image, offset_pos)
 
-        # draw Y sorted objects
+        # draw Y sorted objectsw
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             if self.is_visible(sprite):
                 if sprite == player:
