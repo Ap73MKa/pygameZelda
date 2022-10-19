@@ -21,14 +21,20 @@ class Player(pg.sprite.Sprite):
         self.image = self.sprites[self.direction_state][0]
         self.rect = self.image.get_rect(topleft=pos)
         self.shadow_pos, self.shadow_surf = create_shadow(self)
+        self.shadow_offset = Vector2(0, 0)
 
     def get_shadow(self):
-        # todo fix player's dynamic shadow
         if int(self.prev_sprite_index) != int(self.sprite_index) or\
                 self.prev_dir != self.direction_state:
             self.prev_sprite_index = self.sprite_index
+            self.prev_dir = self.direction_state
             self.shadow_pos, self.shadow_surf = create_shadow(self)
-        return self.shadow_pos, self.shadow_surf
+            self.shadow_offset.x = self.rect.x - self.shadow_pos.x
+            self.shadow_offset.y = self.rect.y - self.shadow_pos.y
+        pos = self.shadow_pos.copy()
+        pos.x = self.rect.x - self.shadow_offset.x
+        pos.y = self.rect.y - self.shadow_offset.y
+        return pos, self.shadow_surf
 
     def set_move(self, direction: DirEnum):
         vec = KeyBoard_actions[direction]
@@ -54,14 +60,13 @@ class Player(pg.sprite.Sprite):
 
     def collision(self, sprite: pg.sprite.Sprite):
         collision_tolerance = 10
+        if abs(sprite.rect.bottom - self.rect.top) < collision_tolerance and self.direction.y < 0:
+            self.rect.y += abs(sprite.rect.bottom - self.rect.top)
         if abs(sprite.rect.top - self.rect.bottom) < collision_tolerance and self.direction.y > 0:
             self.rect.y -= abs(sprite.rect.top - self.rect.bottom)
-        elif abs(sprite.rect.bottom - self.rect.top) < collision_tolerance and self.direction.y < 0:
-            self.rect.y += abs(sprite.rect.bottom - self.rect.top)
-
         if abs(sprite.rect.left - self.rect.right) < collision_tolerance and self.direction.x > 0:
             self.rect.x -= abs(sprite.rect.left - self.rect.right)
-        elif abs(sprite.rect.right - self.rect.left) < collision_tolerance and self.direction.x < 0:
+        if abs(sprite.rect.right - self.rect.left) < collision_tolerance and self.direction.x < 0:
             self.rect.x += abs(sprite.rect.right - self.rect.left)
 
     def move(self, delta, corner: tuple[int, int]):
@@ -79,7 +84,8 @@ class Player(pg.sprite.Sprite):
     def animate(self, delta):
         animation = self.sprites[self.direction_state]
         if self.player_state == StateEnum.IDLE:
-            self.image = animation[0]
+            self.sprite_index = 0
+            self.image = animation[self.sprite_index]
             return
         self.sprite_index += self.sprite_speed * delta
         if self.sprite_index >= len(animation):
@@ -87,23 +93,14 @@ class Player(pg.sprite.Sprite):
         self.image = animation[int(self.sprite_index)]
 
     def get_state(self):
-        if self.direction.x == 0 and self.direction.y == 0:
-            self.player_state = StateEnum.IDLE
-        else:
-            self.player_state = StateEnum.WALK
+        self.player_state = StateEnum.IDLE \
+            if self.direction == self.direction * 0 else StateEnum.WALK
 
     def update(self, delta, corner):
         self.move(delta, corner)
         self.get_state()
         self.animate(delta)
 
-
-# import pygame as pg
-# from misc.path import PathManager
-# from misc.loader import import_folder
-# from misc.config import get_weapon_data
-#
-#
 # class Player(pg.sprite.Sprite):
 #     def __init__(self, pos, groups: pg.sprite.Group, obstacle_sprites, create_attack, destroy_attack):
 #         super().__init__(groups)
@@ -136,32 +133,6 @@ class Player(pg.sprite.Sprite):
 #         self.weapon_switch_time: pg.time = None
 #         self.switch_duration_cooldown: int = 200
 #
-#         # stats
-#         self.stats: dict = self.get_stats()
-#         self.health: int = self.stats['health'] - 20
-#         self.energy: int = self.stats['energy']
-#         self.speed: int = self.stats['speed']
-#         self.exp: int = 120
-#
-#     def import_player_assets(self):
-#         character_path = 'assets/graphics/player'
-#         self.animations = {
-#             'up': [],
-#             'down': [],
-#             'left': [],
-#             'right': [],
-#             'up_idle': [],
-#             'down_idle': [],
-#             'left_idle': [],
-#             'right_idle': [],
-#             'up_attack': [],
-#             'down_attack': [],
-#             'left_attack': [],
-#             'right_attack': [],
-#         }
-#
-#         for anim in self.animations:
-#             self.animations[anim] = import_folder(PathManager.get(f'{character_path}/{anim}'))
 #
 #     def get_status(self):
 #         if self.direction.x == 0 and self.direction.y == 0\
@@ -187,25 +158,6 @@ class Player(pg.sprite.Sprite):
 #
 #         if self.attacking:
 #             return
-#
-#         # movement
-#         if keys[pg.K_UP] or keys[pg.K_w]:
-#             self.direction.y = -1
-#             self.status = 'up'
-#         elif keys[pg.K_DOWN] or keys[pg.K_s]:
-#             self.direction.y = 1
-#             self.status = 'down'
-#         else:
-#             self.direction.y = 0
-#
-#         if keys[pg.K_LEFT] or keys[pg.K_a]:
-#             self.direction.x = -1
-#             self.status = 'left'
-#         elif keys[pg.K_RIGHT] or keys[pg.K_d]:
-#             self.direction.x = 1
-#             self.status = 'right'
-#         else:
-#             self.direction.x = 0
 #
 #         # attack
 #         if keys[pg.K_SPACE]:
@@ -246,23 +198,6 @@ class Player(pg.sprite.Sprite):
 #         self.collision('vertical')
 #         self.rect.center = self.hitbox.center
 #
-#     def collision(self, direction):
-#         if direction == 'horizontal':
-#             for sprite in self.obstacle_sprites:
-#                 if sprite.hitbox.colliderect(self.hitbox):
-#                     if self.direction.x > 0:
-#                         self.hitbox.right = sprite.hitbox.left
-#                     if self.direction.x < 0:
-#                         self.hitbox.left = sprite.hitbox.right
-#
-#         if direction == 'vertical':
-#             for sprite in self.obstacle_sprites:
-#                 if sprite.hitbox.colliderect(self.hitbox):
-#                     if self.direction.y > 0:
-#                         self.hitbox.bottom = sprite.hitbox.top
-#                     if self.direction.y < 0:
-#                         self.hitbox.top = sprite.hitbox.bottom
-#
 #     def animate(self):
 #         animation = self.animations[self.status]
 #         self.frame_index += self.animation_speed
@@ -270,16 +205,6 @@ class Player(pg.sprite.Sprite):
 #             self.frame_index = 0
 #         self.image = animation[int(self.frame_index)]
 #         self.rect = self.image.get_rect(center=self.hitbox.center)
-#
-#     @staticmethod
-#     def get_stats() -> dict:
-#         return {
-#             'health': 100,
-#             'energy': 60,
-#             'attack': 10,
-#             'magic': 4,
-#             'speed': 0.4
-#         }
 #
 #     def update(self):
 #         self.input()

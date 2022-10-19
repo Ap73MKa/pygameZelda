@@ -1,7 +1,9 @@
 import pygame as pg
+
 from misc.config import Config
 from scene.main_scene import Scene
 from objects.characters.commands import InputHandler
+
 
 class Game:
     def __init__(self):
@@ -19,13 +21,10 @@ class Game:
 
     def on_event(self):
         for event in pg.event.get():
-            self._running = False if event.type == pg.QUIT else True
-            command = self.input_handler.handle_input(event)
-            command.execute(self.scene.player) if command else None
-
-    # def on_event(self, event: pg.event) -> None:
-    #     if event.type == pg.QUIT:
-    #         self._running = False
+            self._running = not event.type == pg.QUIT
+            command = self.input_handler.get_command(event)
+            if command:
+                command.execute(self.scene.player)
 
     def on_render(self, delta):
         self.scene.run(delta)
@@ -35,8 +34,6 @@ class Game:
         delta = 0
         while self._running:
             self.on_event()
-            # for event in pg.event.get():
-            #     self.on_event(event)
             self.on_render(delta)
             delta = self.clock.tick(Config.FPS) / 1000
         pg.quit()

@@ -1,3 +1,23 @@
+# def input(self):
+#     keys = pg.key.get_pressed()
+#     self.direction.x = 0
+#     self.direction.y = 0
+#
+#     if keys[Keyboard.UP[0]] or keys[Keyboard.UP[1]]:
+#         self.direction.y = -1
+#         self.direction_state = DirEnum.UP
+#
+#     if keys[Keyboard.DOWN[0]] or keys[Keyboard.DOWN[1]]:
+#         self.direction.y = 1
+#         self.direction_state = DirEnum.DOWN
+#
+#     if keys[Keyboard.LEFT[0]] or keys[Keyboard.LEFT[1]]:
+#         self.direction.x = -1
+#         self.direction_state = DirEnum.LEFT
+#
+#     if keys[Keyboard.RIGHT[0]] or keys[Keyboard.RIGHT[1]]:
+#         self.direction.x = 1
+#         self.direction_state = DirEnum.RIGHT
 # def c_s(self, sprite: pg.sprite.Sprite):
 #     length, angel = 2, 0.2
 #     sprite_mask = pg.mask.from_surface(pg.transform.flip(sprite.image, False, True)).outline()
