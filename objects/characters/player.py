@@ -1,14 +1,14 @@
-import pygame as pg
-
+from pygame.sprite import Sprite, Group
 from pygame.math import Vector2
+from pygame import Rect, Surface
 from objects.characters.utils import SpriteSheet, DirEnum, StateEnum, KeyBoard_actions
 from misc.config import Config, PLAYER_ANIM_PATH
 from scene.light import create_shadow
 
 
-class Player(pg.sprite.Sprite):
-    def __init__(self, pos: tuple[int, int], groups: list[pg.sprite.Group]):
-        super().__init__(groups)
+class Player(Sprite):
+    def __init__(self, pos: tuple[int, int], groups: list[Group]):
+        super().__init__(*groups)
         self.direction = Vector2()
         self.direction_state = self.prev_dir = DirEnum.DOWN
         self.player_state = StateEnum.IDLE
@@ -23,7 +23,7 @@ class Player(pg.sprite.Sprite):
         self.shadow_pos, self.shadow_surf = create_shadow(self)
         self.shadow_offset = Vector2(0, 0)
 
-    def get_shadow(self):
+    def get_shadow(self) -> tuple[Rect, Surface]:
         if int(self.prev_sprite_index) != int(self.sprite_index) or\
                 self.prev_dir != self.direction_state:
             self.prev_sprite_index = self.sprite_index
@@ -58,7 +58,8 @@ class Player(pg.sprite.Sprite):
                 self.direction_state = DirEnum.RIGHT
             self.direction.y = 0
 
-    def collision(self, sprite: pg.sprite.Sprite):
+    def collision(self, sprite: Sprite):
+        # todo fix stuck
         collision_tolerance = 10
         if abs(sprite.rect.bottom - self.rect.top) < collision_tolerance and self.direction.y < 0:
             self.rect.y += abs(sprite.rect.bottom - self.rect.top)

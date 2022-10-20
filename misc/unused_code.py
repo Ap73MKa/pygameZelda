@@ -18,12 +18,14 @@
 #     if keys[Keyboard.RIGHT[0]] or keys[Keyboard.RIGHT[1]]:
 #         self.direction.x = 1
 #         self.direction_state = DirEnum.RIGHT
+#
 # def c_s(self, sprite: pg.sprite.Sprite):
 #     length, angel = 2, 0.2
 #     sprite_mask = pg.mask.from_surface(pg.transform.flip(sprite.image, False, True)).outline()
 #     points = np.array([(x + y * length * angel + sprite.rect.x - self.offset.x,
 #                         y - y * length + sprite.rect.bottomleft[1] - 6 - self.offset.y) for x, y in sprite_mask])
 #     pygame.gfxdraw.filled_polygon(self.display_surface, points, (10, 0, 60, 50))
+#
 # def create_shadow(sprite: pg.sprite.Sprite):
 #     length, angel = 2, 0.2
 #     sprite_mask = pg.mask.from_surface(pg.transform.flip(sprite.image, False, True)).outline()
@@ -35,7 +37,7 @@
 #     shape_surf = pg.Surface(target_rect.size, pg.SRCALPHA)
 #     pg.draw.polygon(shape_surf, (10, 0, 40, 50), [(x - min_x, y - min_y) for x, y in points])
 #     return target_rect, shape_surf
-
+#
 # def create_shadow_1(self, sprite: pg.sprite.Sprite):
 #     length, angel = 2, 0.2
 #     sprite_mask = pg.mask.from_surface(pg.transform.flip(sprite.image, False, True)).outline()

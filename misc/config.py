@@ -1,6 +1,6 @@
 import pygame as pg
-from typing import Final
 from abc import ABC
+from typing import Final
 from misc.path import PathManager
 
 PLAYER_ANIM_PATH = PathManager.get('assets/graphics/player/stand_walk.png')
@@ -14,7 +14,7 @@ class Config(ABC):
 
 
 class Keyboard(ABC):
-    UP: Final = pg.K_w, pg.K_UP,
-    DOWN: Final = pg.K_s, pg.K_DOWN,
-    LEFT: Final = pg.K_a, pg.K_LEFT,
+    UP: Final = pg.K_w, pg.K_UP
+    DOWN: Final = pg.K_s, pg.K_DOWN
+    LEFT: Final = pg.K_a, pg.K_LEFT
     RIGHT: Final = pg.K_d, pg.K_RIGHT

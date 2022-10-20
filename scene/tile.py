@@ -1,14 +1,9 @@
-import pygame as pg
+from pygame import Surface
+from pygame.sprite import Sprite, Group
 
 
-class Tile(pg.sprite.Sprite):
-    def __init__(self, pos: tuple[int, int], surface: pg.Surface, groups: list[pg.sprite.Group]):
-        super().__init__(groups)
+class Tile(Sprite):
+    def __init__(self, pos: tuple[int, int], surface: Surface, groups: list[Group]):
+        super().__init__(*groups)
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
-
-#         if sprite_type == 'object':
-#             self.rect = self.image.get_rect(topleft=(pos[0], pos[1] - Config.TITLE_SIZE))
-#         else:
-#             self.rect = self.image.get_rect(topleft=pos)
-#         self.hitbox = self.rect.inflate(0, -10)

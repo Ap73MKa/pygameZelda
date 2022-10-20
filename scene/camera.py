@@ -1,24 +1,23 @@
-import pygame as pg
-
+from pygame.sprite import Sprite, Group
+from pygame.display import get_surface
 from pygame.math import Vector2
 from objects.characters.player import Player
 from misc.config import Config
 
 
-class CameraGroup(pg.sprite.Group):
+class CameraGroup(Group):
     def __init__(self, corner: tuple[int, int]):
         super().__init__()
-        self.display_surface = pg.display.get_surface()
+        self.display_surface = get_surface()
         self.size = Vector2(*self.display_surface.get_size())
-        self.camera = Vector2(self.size.x // 2, self.size.y // 2)
-        self.corner = Vector2(corner[0], corner[1])
-        self.offset = Vector2()
+        self.camera = Vector2(*(self.size // 2))
+        self.corner, self.offset = Vector2(*corner), Vector2()
 
-    def is_visible(self, sprite: pg.sprite.Sprite):
+    def is_visible(self, sprite: Sprite) -> bool:
         return self.size.y + self.offset.y > sprite.rect.y > -Config.TITLE_SIZE - self.offset.y and \
                 self.size.x + self.offset.x > sprite.rect.x > -Config.TITLE_SIZE - self.offset.x
 
-    def custom_draw(self, player: Player, floor: pg.sprite.Group, delta: float):
+    def custom_draw(self, player: Player, floor: Group, delta: float):
         # smooth offset
         heading = player.rect.center - self.camera
         self.camera += heading * 0.1 * 50 * delta
@@ -39,11 +38,12 @@ class CameraGroup(pg.sprite.Group):
                 offset_pos = sprite.rect.topleft - self.offset
                 self.display_surface.blit(sprite.image, offset_pos)
 
-        # draw Y sorted objectsw
+        # draw Y sorted objects
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            if self.is_visible(sprite):
-                if sprite == player:
-                    sh_pos, sh_surf = player.get_shadow()
-                    self.display_surface.blit(sh_surf, sh_pos.topleft - self.offset)
-                offset_pos = sprite.rect.topleft - self.offset
-                self.display_surface.blit(sprite.image, offset_pos)
+            if not self.is_visible(sprite):
+                continue
+            if sprite == player:
+                sh_pos, sh_surf = player.get_shadow()
+                self.display_surface.blit(sh_surf, sh_pos.topleft - self.offset)
+            offset_pos = sprite.rect.topleft - self.offset
+            self.display_surface.blit(sprite.image, offset_pos)

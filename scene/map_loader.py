@@ -8,20 +8,16 @@ from scene.light import create_shadow
 
 def load_map(data: TiledMap, *groups):
     """
-
-    :param data:
-    :param groups:
-    groups[0] - floor group
-    groups[1] - obstacle group
-    groups[2] - visible group
-    :return:
+    | groups[0] - floor group
+    | groups[1] - obstacle group
+    | groups[2] - visible group
     """
     for layer in data.visible_layers:
         if not hasattr(layer, 'data'):
             break
         for x, y, surf in layer.tiles():
             pos = (x * Config.TITLE_SIZE, y * Config.TITLE_SIZE)
-            Tile(pos, surf, groups[0])
+            Tile(pos, surf, [groups[0]])
 
     layer = data.get_layer_by_name('Border')
     if hasattr(layer, 'data'):

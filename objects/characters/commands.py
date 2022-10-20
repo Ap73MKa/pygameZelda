@@ -30,7 +30,7 @@ class InputHandler:
         self.stop = tuple(StopMove(direct) for direct in DirEnum)
         self.pressed = {direct: False for direct in DirEnum}
 
-    def get_command(self, event: event):
+    def get_command(self, event: event) -> Command | None:
         if event.type == KEYDOWN:
             for direct in DirEnum:
                 if event.key in key_vec[direct]:
