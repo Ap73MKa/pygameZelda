@@ -29,8 +29,8 @@ class Game:
     def on_update(self, delta):
         self.scene.update(delta)
 
-    def on_render(self, delta):
-        self.scene.render(delta)
+    def on_render(self):
+        self.scene.render()
         pg.display.update()
 
     def on_execute(self) -> None:
@@ -38,6 +38,6 @@ class Game:
         while self._running:
             self.on_event()
             self.on_update(delta)
-            self.on_render(delta)
+            self.on_render()
             delta = self.clock.tick(Config.FPS) / 1000
         pg.quit()

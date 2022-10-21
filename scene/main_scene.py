@@ -31,9 +31,10 @@ class Scene:
     def update(self, delta):
         self.player.update(delta, self.corner)
         self.check_collide()
+        self.visible_sprites.custom_update(self.player, delta)
 
-    def render(self, delta):
-        self.visible_sprites.custom_draw(self.player, self.floor_sprites, delta)
+    def render(self):
+        self.visible_sprites.custom_render(self.player, self.floor_sprites)
 
 
 # class Scene:
