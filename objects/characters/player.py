@@ -17,11 +17,11 @@ class Player(Sprite):
         # Graphic
         self.sprites = SpriteSheet(PLAYER_ANIM_PATH, (Config.TITLE_SIZE, Config.TITLE_SIZE))
         self.sprite_speed = 5
-        self.sprite_index = self.prev_sprite_index = 0
+        self.sprite_index, self.prev_sprite_index = 0, -1
         self.image = self.sprites[self.direction_state][0]
         self.rect = self.image.get_rect(topleft=pos)
-        self.shadow_pos, self.shadow_surf = create_shadow(self)
         self.shadow_offset = Vector2(0, 0)
+        self.shadow_pos, self.shadow_surf = self.get_shadow()
 
     def get_shadow(self) -> tuple[Rect, Surface]:
         if int(self.prev_sprite_index) != int(self.sprite_index) or\

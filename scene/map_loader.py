@@ -3,7 +3,6 @@ import pygame as pg
 from pytmx import TiledMap
 from misc.config import Config
 from scene.tile import Tile
-from scene.light import create_shadow
 
 
 def load_map(data: TiledMap, *groups):
@@ -29,5 +28,6 @@ def load_map(data: TiledMap, *groups):
         if not obj.image:
             return
         sprite = Tile((obj.x, obj.y), obj.image, [groups[2], groups[1]])
-        pos, surf = create_shadow(sprite)
+        sprite.create_shadow()
+        pos, surf = sprite.get_shadow()
         Tile((pos[0], pos[1]), surf, [groups[2]])

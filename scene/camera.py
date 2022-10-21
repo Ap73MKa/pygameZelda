@@ -17,7 +17,7 @@ class CameraGroup(Group):
         return self.size.y + self.offset.y > sprite.rect.y > -Config.TITLE_SIZE - self.offset.y and \
                 self.size.x + self.offset.x > sprite.rect.x > -Config.TITLE_SIZE - self.offset.x
 
-    def custom_draw(self, player: Player, floor: Group, delta: float):
+    def custom_update(self, player, delta):
         # smooth offset
         heading = player.rect.center - self.camera
         self.camera += heading * 0.1 * 50 * delta
@@ -32,6 +32,7 @@ class CameraGroup(Group):
         self.offset.x = round(self.offset.x)
         self.offset.y = round(self.offset.y)
 
+    def custom_draw(self, player: Player, floor: Group):
         # draw floor
         for sprite in floor.sprites():
             if self.is_visible(sprite):

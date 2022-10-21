@@ -1,5 +1,6 @@
 from pygame import Surface
 from pygame.sprite import Sprite, Group
+from scene.light import create_shadow
 
 
 class Tile(Sprite):
@@ -7,3 +8,10 @@ class Tile(Sprite):
         super().__init__(*groups)
         self.image = surface
         self.rect = self.image.get_rect(topleft=pos)
+        self.shadow_pos, self.shadow_surf = None, None
+
+    def create_shadow(self):
+        self.shadow_pos, self.shadow_surf = create_shadow(self)
+
+    def get_shadow(self):
+        return self.shadow_pos, self.shadow_surf
