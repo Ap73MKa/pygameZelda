@@ -28,26 +28,20 @@ class Gameplay(BaseState):
         self.input_handler = InputHandler()
 
     def check_collide(self):
-        for sprite in sorted(self.obstacle_sprites, key=lambda sprite: sprite.rect.centery):
-            distant = sprite.rect.centery - self.player.rect.centery
-            if abs(distant) > Config.TITLE_SIZE * 2:
-                if distant > Config.TITLE_SIZE * 2:
-                    break
-                continue
-            if sprite.rect.colliderect(self.player.rect):
-                self.player.collision(sprite)
+        for sprite in sorted(self.obstacle_sprites.sprites(), key=lambda sprite: sprite.rect.centery):
+            if sprite.rect.centery - self.player.rect.centery > Config.TITLE_SIZE * 2:
+                break
+            self.player.collision(sprite) if sprite.rect.colliderect(self.player.rect) else None
 
     def get_event(self, event):
-        if event.type == pg.KEYUP and event.key == pg.K_SPACE:
-            self.done = True
+        self.done = event.type == pg.KEYUP and event.key == pg.K_SPACE
         command = self.input_handler.get_command(event)
-        if command:
-            command.execute(self.player)
+        command.execute(self.player) if command else None
 
     def update(self, delta):
         self.player.update(delta, self.corner)
         self.check_collide()
-        self.visible_sprites.custom_update(self.player, delta)
+        self.visible_sprites.update(self.player, delta)
 
     def render(self):
         self.visible_sprites.custom_draw(self.player, self.floor_sprites)
@@ -60,7 +54,6 @@ class Gameplay(BaseState):
 #         self.create_map()
 #         self.current_attack = None
 #         self.ui = UI()
-
 #
 #     def create_attack(self):
 #         self.current_attack = Weapon(self.player, [self.visible_sprites])

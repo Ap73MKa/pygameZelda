@@ -17,7 +17,7 @@ class CameraGroup(Group):
         return self.size.y + self.offset.y > sprite.rect.y > - Config.TITLE_SIZE - self.offset.y and \
                 self.size.x + self.offset.x > sprite.rect.x > - Config.TITLE_SIZE - self.offset.x
 
-    def custom_update(self, player: Player, delta: float):
+    def update(self, player: Player, delta: float):
         heading = player.rect.center - self.camera
         self.camera += heading * 0.1 * 50 * delta
         self.offset = self.camera - (self.size / 2)
