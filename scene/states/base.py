@@ -1,12 +1,12 @@
-from pygame.display import get_surface
 from pygame.font import Font
+from pygame.display import get_surface
+from pygame import event
 
 
-class BaseState(object):
+class BaseState:
     def __init__(self):
         self.surface = get_surface()
-        self.done = False
-        self.quit = False
+        self.done = self.quit = False
         self.next_state = None
         self.screen_rect = get_surface().get_rect()
         self.persist = {}
@@ -15,11 +15,11 @@ class BaseState(object):
     def startup(self, persistent):
         self.persist = persistent
 
-    def get_event(self, event):
+    def get_event(self, event: event):
         pass
 
-    def update(self, dt):
+    def update(self, delta: float):
         pass
 
-    def draw(self):
+    def render(self):
         pass

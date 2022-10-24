@@ -1,11 +1,11 @@
 import pygame
 from .base import BaseState
-from .state_utils import GameStates
+from scene.states.state_utils import GameStates
 
 
 class Menu(BaseState):
     def __init__(self):
-        super(Menu, self).__init__()
+        super().__init__()
         self.active_index = 0
         self.options = ["Start Game", "Quit Game"]
         self.next_state = GameStates.GAMEPLAY
@@ -35,7 +35,7 @@ class Menu(BaseState):
             elif event.key == pygame.K_RETURN:
                 self.handle_action()
 
-    def draw(self):
+    def render(self):
         self.surface.fill(pygame.Color("black"))
         for index, option in enumerate(self.options):
             text_render = self.render_text(index)
