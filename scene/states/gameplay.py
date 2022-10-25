@@ -27,7 +27,7 @@ class Gameplay(BaseState):
         self.next_state = GameStates.GAMEOVER
         self.input_handler = InputHandler()
 
-    def check_collide(self):
+    def _check_collide(self):
         for sprite in sorted(self.obstacle_sprites.sprites(), key=lambda sprite: sprite.rect.centery):
             if sprite.rect.centery - self.player.rect.centery > Config.TITLE_SIZE * 2:
                 break
@@ -40,7 +40,7 @@ class Gameplay(BaseState):
 
     def update(self, delta):
         self.player.update(delta, self.corner)
-        self.check_collide()
+        self._check_collide()
         self.visible_sprites.update(self.player, delta)
 
     def render(self):
