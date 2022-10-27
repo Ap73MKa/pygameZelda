@@ -33,6 +33,10 @@ class Gameplay(BaseState):
                 break
             self.player.collision(sprite) if sprite.rect.colliderect(self.player.rect) else None
 
+    def startup(self, persistent):
+        self.visible_sprites.set_target(self.player)
+        self.visible_sprites.set_background(self.floor_sprites)
+
     def get_event(self, event):
         self.done = event.type == pg.KEYUP and event.key == pg.K_SPACE
         command = self.input_handler.get_command(event)
@@ -41,10 +45,10 @@ class Gameplay(BaseState):
     def update(self, delta):
         self.player.update(delta, self.corner)
         self._check_collide()
-        self.visible_sprites.update(self.player, delta)
+        self.visible_sprites.update(delta)
 
     def render(self):
-        self.visible_sprites.custom_draw(self.player, self.floor_sprites)
+        self.visible_sprites.render()
 
 # class Scene:
 #     def __init__(self):

@@ -23,6 +23,12 @@ class Player(Sprite):
         self.shadow_offset = Vector2(0, 0)
         self.shadow_pos, self.shadow_surf = self.get_shadow()
 
+    def _check_out_of_border(self, corner: tuple[int, int]):
+        self.rect.x = max(self.rect.x, 0)
+        self.rect.y = max(self.rect.y, 0)
+        self.rect.x = min(self.rect.x, corner[0] - Config.TITLE_SIZE)
+        self.rect.y = min(self.rect.y, corner[1] - Config.TITLE_SIZE)
+
     def get_shadow(self) -> tuple[Rect, Surface]:
         if int(self.prev_sprite_index) != int(self.sprite_index) or\
                 self.prev_dir != self.direction_state:
@@ -59,7 +65,6 @@ class Player(Sprite):
             self.direction.y = 0
 
     def collision(self, sprite: Sprite):
-        # todo fix stuck
         collision_tolerance = 10
         if abs(sprite.rect.bottom - self.rect.top) < collision_tolerance and self.direction.y < 0:
             self.rect.y += abs(sprite.rect.bottom - self.rect.top)
@@ -73,14 +78,9 @@ class Player(Sprite):
     def move(self, delta, corner: tuple[int, int]):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
-        self.rect.x = round(self.direction.x * self.speed * delta + self.rect.x)
-        self.rect.y = round(self.direction.y * self.speed * delta + self.rect.y)
-
-        # border
-        self.rect.x = max(self.rect.x, 0)
-        self.rect.y = max(self.rect.y, 0)
-        self.rect.x = min(self.rect.x, corner[0] - Config.TITLE_SIZE)
-        self.rect.y = min(self.rect.y, corner[1] - Config.TITLE_SIZE)
+        self.rect.x += round(self.direction.x * self.speed * delta)
+        self.rect.y += round(self.direction.y * self.speed * delta)
+        self._check_out_of_border(corner)
 
     def animate(self, delta):
         animation = self.sprites[self.direction_state]
