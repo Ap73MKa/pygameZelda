@@ -42,7 +42,6 @@ class Player(Sprite):
         pos.y = self.rect.y - self.shadow_offset.y
         return pos, self.shadow_surf
 
-
     def set_move(self, direction: DirEnum):
         vec = KeyBoard_actions[direction]
         self.direction.x = vec.x if vec.x != 0 else self.direction.x

@@ -5,7 +5,7 @@ from pygame.sprite import Group
 from pytmx.util_pygame import load_pygame
 
 from objects.characters.player import Player
-from objects.characters.commands import InputHandler
+from scene.events.player_events import PlayerInputHandler
 from misc.path import PathManager
 from misc.config import Config
 from scene.map_loader import load_map
@@ -20,12 +20,12 @@ class Gameplay(BaseState):
         self.display_surface = get_surface()
         self.tmx_data = load_pygame(PathManager.get('assets/map/my_map.tmx'))
         self.corner = (self.tmx_data.width * Config.TITLE_SIZE, self.tmx_data.height * Config.TITLE_SIZE)
-        self.visible_sprites = CameraGroup(self.corner)
+        self.visible_sprites = CameraGroup()
         self.obstacle_sprites, self.floor_sprites = Group(), Group()
         load_map(self.tmx_data, self.floor_sprites, self.obstacle_sprites, self.visible_sprites)
         self.player = Player((1000, 800), [self.visible_sprites])
         self.next_state = GameStates.GAMEOVER
-        self.input_handler = InputHandler()
+        self.input_handler = PlayerInputHandler()
 
     def _check_collide(self):
         for sprite in sorted(self.obstacle_sprites.sprites(), key=lambda sprite: sprite.rect.centery):
@@ -36,6 +36,7 @@ class Gameplay(BaseState):
     def startup(self, persistent):
         self.visible_sprites.set_target(self.player)
         self.visible_sprites.set_background(self.floor_sprites)
+        self.visible_sprites.set_corner(self.corner)
 
     def get_event(self, event):
         self.done = event.type == pg.KEYUP and event.key == pg.K_SPACE

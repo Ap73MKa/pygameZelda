@@ -3,12 +3,12 @@ from objects.characters.utils import DirEnum, key_vec
 from objects.characters.player import Player
 
 
-class Command:
+class PlayerCommand:
     def execute(self, player: Player):
         raise NotImplementedError()
 
 
-class StopMove(Command):
+class StopMove(PlayerCommand):
     def __init__(self, direction: DirEnum):
         self.direction = direction
 
@@ -16,7 +16,7 @@ class StopMove(Command):
         player.stop_move(self.direction)
 
 
-class Move(Command):
+class Move(PlayerCommand):
     def __init__(self, direction: DirEnum):
         self.direction = direction
 
@@ -24,13 +24,13 @@ class Move(Command):
         player.set_move(self.direction)
 
 
-class InputHandler:
+class PlayerInputHandler:
     def __init__(self):
         self.move = tuple(Move(direct) for direct in DirEnum)
         self.stop = tuple(StopMove(direct) for direct in DirEnum)
         self.pressed = {direct: False for direct in DirEnum}
 
-    def _get_pressed(self, event: event) -> Command | None:
+    def _get_pressed(self, event: event) -> PlayerCommand | None:
         if event.type == KEYDOWN:
             for direct in DirEnum:
                 if event.key in key_vec[direct]:
@@ -38,7 +38,7 @@ class InputHandler:
                     return self.move[direct]
         return None
 
-    def _get_unpressed(self, event: event) -> Command | None:
+    def _get_unpressed(self, event: event) -> PlayerCommand | None:
         if event.type == KEYUP:
             for direct in DirEnum:
                 if event.key in key_vec[direct]:
@@ -49,7 +49,7 @@ class InputHandler:
                     return self.stop[direct]
         return None
 
-    def get_command(self, event: event) -> Command | None:
+    def get_command(self, event: event) -> PlayerCommand | None:
         if self._get_pressed(event):
             return self._get_pressed(event)
         if self._get_unpressed(event):

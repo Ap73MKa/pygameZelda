@@ -38,6 +38,10 @@
 #     pg.draw.polygon(shape_surf, (10, 0, 40, 50), [(x - min_x, y - min_y) for x, y in points])
 #     return target_rect, shape_surf
 #
+# if isinstance(sprite, Player):
+#     sh_pos, sh_surf = sprite.get_shadow()
+#     self.display_surface.blit(sh_surf, sh_pos.topleft - self.offset)
+#
 # def create_shadow_1(self, sprite: pg.sprite.Sprite):
 #     length, angel = 2, 0.2
 #     sprite_mask = pg.mask.from_surface(pg.transform.flip(sprite.image, False, True)).outline()

@@ -1,22 +1,21 @@
 from pygame.sprite import Sprite, Group
 from pygame.display import get_surface
 from pygame.math import Vector2
-from misc.config import Config
-from objects.characters.player import Player
 
 
 class CameraGroup(Group):
-    def __init__(self, corner: tuple[int, int]):
+    def __init__(self, corner: tuple[int, int] = (0, 0), target: Sprite = None, background: Group = None):
         super().__init__()
         self.display_surface = get_surface()
         self.size = Vector2(*self.display_surface.get_size())
         self.camera = Vector2(*(self.size // 2))
         self.corner, self.offset = Vector2(*corner), Vector2()
-        self.target, self.background = None, None
+        self.target, self.background = target, background
 
     def _is_visible(self, sprite: Sprite) -> bool:
-        return self.size.y + self.offset.y > sprite.rect.y > - Config.TITLE_SIZE - self.offset.y and \
-                self.size.x + self.offset.x > sprite.rect.x > - Config.TITLE_SIZE - self.offset.x
+        inaccuracy = 200
+        return self.size.y + self.offset.y > sprite.rect.y > - inaccuracy - self.offset.y and \
+               self.size.x + self.offset.x > sprite.rect.x > - inaccuracy - self.offset.x
 
     def _get_offset_to_target(self, delta: float):
         heading = self.target.rect.center - self.camera
@@ -38,9 +37,6 @@ class CameraGroup(Group):
     def _draw_objects(self):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             if self._is_visible(sprite):
-                if isinstance(sprite, Player):
-                    sh_pos, sh_surf = sprite.get_shadow()
-                    self.display_surface.blit(sh_surf, sh_pos.topleft - self.offset)
                 offset_pos = sprite.rect.topleft - self.offset
                 self.display_surface.blit(sprite.image, offset_pos)
 
@@ -50,10 +46,14 @@ class CameraGroup(Group):
     def set_background(self, group: Group):
         self.background = group
 
+    def set_corner(self, corner: tuple[int, int]):
+        self.corner = Vector2(*corner)
+
     def update(self, delta: float):
         if self.target:
             self._get_offset_to_target(delta)
-        self._limit_screen()
+        if self.corner != Vector2(0, 0):
+            self._limit_screen()
 
     def render(self):
         if self.background:
