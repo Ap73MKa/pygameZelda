@@ -1,7 +1,7 @@
 from pygame import image
 from enum import IntEnum, auto
 from pygame import Vector2
-from misc.config import Keyboard
+from game.misc.config import Keyboard
 
 
 class SpriteSheet:

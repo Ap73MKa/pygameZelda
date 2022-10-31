@@ -1,6 +1,6 @@
 import pygame as pg
-from misc.config import Config
-from scene.states import Menu, GameOver, Gameplay, GameStates
+from game.misc.config import Config
+from game.scene.states import Menu, GameOver, Gameplay, GameStates
 
 
 class Game:

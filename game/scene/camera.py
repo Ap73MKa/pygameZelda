@@ -20,13 +20,14 @@ class CameraGroup(Group):
     def _get_offset_to_target(self, delta: float):
         heading = self.target.rect.center - self.camera
         self.camera += heading * 0.1 * 50 * delta
-        self.offset = self.camera - (self.size / 2)
+        self.offset.x = round(self.camera.x - (self.size.x / 2))
+        self.offset.y = round(self.camera.y - (self.size.y / 2))
 
     def _limit_screen(self):
-        self.offset.x = round(max(self.offset.x, 0))
-        self.offset.y = round(max(self.offset.y, 0))
-        self.offset.x = round(min(self.corner.x - self.size.x, self.offset.x))
-        self.offset.y = round(min(self.corner.y - self.size.y, self.offset.y))
+        self.offset.x = max(self.offset.x, 0)
+        self.offset.y = max(self.offset.y, 0)
+        self.offset.x = min(self.offset.x, self.corner.x - self.size.x)
+        self.offset.y = min(self.offset.y, self.corner.y - self.size.y)
 
     def _draw_floor(self):
         for sprite in self.background.sprites():

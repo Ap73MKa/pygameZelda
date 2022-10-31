@@ -1,6 +1,6 @@
 from pygame import KEYDOWN, KEYUP, event
-from objects.characters.utils import DirEnum, key_vec
-from objects.characters.player import Player
+from game.objects.characters.utils import DirEnum, key_vec
+from game.objects.characters.player import Player
 
 
 class PlayerCommand:

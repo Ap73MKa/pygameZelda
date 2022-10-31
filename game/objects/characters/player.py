@@ -1,9 +1,9 @@
 from pygame.sprite import Sprite, Group
 from pygame.math import Vector2
 from pygame import Rect, Surface
-from objects.characters.utils import SpriteSheet, DirEnum, StateEnum, KeyBoard_actions
-from misc.config import Config, PLAYER_ANIM_PATH
-from scene.light import create_shadow
+from game.objects.characters.utils import SpriteSheet, DirEnum, StateEnum, KeyBoard_actions
+from game.misc.config import Config, PLAYER_ANIM_PATH
+from game.scene.light import create_shadow
 
 
 class Player(Sprite):

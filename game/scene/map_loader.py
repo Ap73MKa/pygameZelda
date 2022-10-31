@@ -1,8 +1,8 @@
 import pygame as pg
 
 from pytmx import TiledMap
-from misc.config import Config
-from scene.tile import Tile
+from game.misc.config import Config
+from game.scene.tile import Tile
 
 
 def load_map(data: TiledMap, *groups):

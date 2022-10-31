@@ -4,21 +4,21 @@ from pygame.display import get_surface
 from pygame.sprite import Group
 from pytmx.util_pygame import load_pygame
 
-from objects.characters.player import Player
-from scene.events.player_events import PlayerInputHandler
-from misc.path import PathManager
-from misc.config import Config
-from scene.map_loader import load_map
-from scene.camera import CameraGroup
-from scene.states.state_utils import GameStates
-from scene.states.base import BaseState
+from game.objects.characters.player import Player
+from game.scene.events.player_events import PlayerInputHandler
+from game.misc.path import PathManager
+from game.misc.config import Config
+from game.scene.map_loader import load_map
+from game.scene.camera import CameraGroup
+from game.scene.states.state_utils import GameStates
+from game.scene.states.base import BaseState
 
 
 class Gameplay(BaseState):
     def __init__(self):
         super().__init__()
         self.display_surface = get_surface()
-        self.tmx_data = load_pygame(PathManager.get('assets/map/my_map.tmx'))
+        self.tmx_data = load_pygame(PathManager.get('../assets/map/my_map.tmx'))
         self.corner = (self.tmx_data.width * Config.TITLE_SIZE, self.tmx_data.height * Config.TITLE_SIZE)
         self.visible_sprites = CameraGroup()
         self.obstacle_sprites, self.floor_sprites = Group(), Group()

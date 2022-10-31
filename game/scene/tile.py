@@ -1,6 +1,6 @@
 from pygame import Surface
 from pygame.sprite import Sprite, Group
-from scene.light import create_shadow
+from game.scene.light import create_shadow
 
 
 class Tile(Sprite):

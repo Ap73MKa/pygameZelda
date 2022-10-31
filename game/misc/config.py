@@ -1,9 +1,9 @@
 import pygame as pg
 from abc import ABC
 from typing import Final
-from misc.path import PathManager
+from game.misc.path import PathManager
 
-PLAYER_ANIM_PATH = PathManager.get('assets/graphics/player/stand_walk.png')
+PLAYER_ANIM_PATH = PathManager.get('../assets/graphics/player/stand_walk.png')
 
 
 class Config(ABC):

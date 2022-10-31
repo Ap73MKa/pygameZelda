@@ -1,6 +1,6 @@
 import pygame
 from .base import BaseState
-from scene.states.state_utils import GameStates
+from game.scene.states.state_utils import GameStates
 
 
 class Menu(BaseState):

@@ -1,4 +1,4 @@
-# import pygame as pg
+# import game as pg
 # from main_scene.player import Player
 # from misc.path import PathManager
 #

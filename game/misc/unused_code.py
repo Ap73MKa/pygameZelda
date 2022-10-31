@@ -24,7 +24,7 @@
 #     sprite_mask = pg.mask.from_surface(pg.transform.flip(sprite.image, False, True)).outline()
 #     points = np.array([(x + y * length * angel + sprite.rect.x - self.offset.x,
 #                         y - y * length + sprite.rect.bottomleft[1] - 6 - self.offset.y) for x, y in sprite_mask])
-#     pygame.gfxdraw.filled_polygon(self.display_surface, points, (10, 0, 60, 50))
+#     game.gfxdraw.filled_polygon(self.display_surface, points, (10, 0, 60, 50))
 #
 # def create_shadow(sprite: pg.sprite.Sprite):
 #     length, angel = 2, 0.2
